@@ -4,7 +4,7 @@
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="nav navbar-nav mr-auto">
           <b-nav-form>
-            <b-form-input class="mr-sm-2" placeholder="Search"></b-form-input>
+            <b-form-input class="mr-sm-2" v-model="search" placeholder="Search"></b-form-input>
             <b-button variant="outline-success" class="my-2 my-sm-search" type="submit">Search</b-button>
           </b-nav-form>
         </ul>

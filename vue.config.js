@@ -6,6 +6,9 @@ function resolveSrc(_path) {
 }
 
 module.exports = {
+  devServer: {
+    proxy: 'http://localhost:8000',
+},
   lintOnSave: false,
   configureWebpack: {
     // Set up all the aliases we use in our app.

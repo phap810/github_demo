@@ -36,15 +36,23 @@
                   </slot>
                 </thead>
                 <tbody>
-                  <tr v-for="user in user.data" v-bind:key="user.id">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.phone }}</td>
-                    <td>{{ user.address }}</td>
-                    <td><img v-bind:src="'http://127.0.0.1:8000/public/uploads/user/'+user.img" width="100" alt="product"></td>
+                  <tr v-for="users in user.data" v-bind:key="users.id">
+                    <td>{{ users.id }}</td>
+                    <td>{{ users.name }}</td>
+                    <td>{{ users.email }}</td>
+                    <td>{{ users.phone }}</td>
+                    <td>{{ users.address }}</td>
                     <td>
-                      <div v-if="user.role == 1">
+                      <img
+                        v-bind:src="
+                          'http://127.0.0.1:8000/uploads/user/' + users.img
+                        "
+                        width="100"
+                        alt="product"
+                      />
+                    </td>
+                    <td>
+                      <div v-if="users.role == 1">
                         <b-badge variant="success">Admin</b-badge>
                       </div>
                       <div v-else>
@@ -52,7 +60,7 @@
                       </div>
                     </td>
                     <td>
-                      <div v-if="user.status == 1">
+                      <div v-if="users.status == 1">
                         <b-badge variant="success">Active</b-badge>
                       </div>
                       <div v-else>
@@ -68,13 +76,14 @@
                         <i class="fa fa-edit"></i>
                       </a>
                       /
-                      <a href="#" @click="clickDelete(user.id)">
+                      <a href="#" @click="clickDelete(users.id)">
                         <i class="fa fa-trash"></i>
                       </a>
                     </td>
                   </tr>
                 </tbody>
                 <b-modal
+                  size="lg"
                   id="modal-prevent-closing"
                   ref="modal"
                   title="Add users"
@@ -83,45 +92,274 @@
                   @ok="handleAdd"
                   cancel-title="Close"
                 >
-                  <form @submit.prevent="SubmitAdd">
-                    <b-form-group
-                      label="Name"
-                      label-for="name-input"
-                      invalid-feedback="Name is required"
-                    >
-                      <b-form-input
-                        id="name-input"
-                        v-model="formadd.name"
-                        required
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                    <b-form-group
-                      label="Email"
-                      label-for="name-input"
-                      invalid-feedback="Name is required"
-                    >
-                      <b-form-input
-                        id="name-input"
-                        type="email"
-                        v-model="formadd.email"
-                        required
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                    <b-form-group
-                      label="Created At"
-                      label-for="name-input"
-                      invalid-feedback="Name is required"
-                    >
-                      <b-form-input
-                        id="name-input"
-                        type="date"
-                        v-model="formadd.created_at"
-                        required
-                      >
-                      </b-form-input>
-                    </b-form-group>
+                  <form
+                    @submit.prevent="SubmitAdd"
+                    enctype="multipart/form-data"
+                  >
+                    <b-row>
+                      <b-col lg="6">
+                        <b-form-group
+                          label="Code"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            v-model="formadd.code"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Name"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="text"
+                            v-model="formadd.name"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Date of birth"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="date"
+                            v-model="formadd.dateofbirth"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="phone"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="text"
+                            v-model="formadd.phone"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Address"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="text"
+                            v-model="formadd.address"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                      </b-col>
+                      <b-col lg="6">
+                        <b-form-group
+                          label="Email"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="email"
+                            v-model="formadd.email"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Password"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="password"
+                            v-model="formadd.password"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Confirm password"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="password"
+                            v-model="formadd.confirmpassword"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group label="Image" label-for="name-input">
+                          <b-form-file
+                            v-model="formadd.img"
+                            placeholder="Choose a image or drop it here..."
+                            drop-placeholder="Drop image here..."
+                          ></b-form-file>
+                          <img class="img1" :src="image" />
+                        </b-form-group>
+                        <b-form-group label="Role">
+                          <b-form-select
+                            v-model="formadd.role"
+                            :options="options"
+                          ></b-form-select>
+                        </b-form-group>
+                        <b-button type="submit">add</b-button>
+                      </b-col>
+                    </b-row>
+                  </form>
+                </b-modal>
+                <b-modal
+                  size="lg"
+                  id="modal-edit"
+                  ref="modal"
+                  title="Add users"
+                  @show="resetModal"
+                  @hidden="resetModal"
+                  @handleOk="handleEdit"
+                  cancel-title="Close"
+                >
+                  <form
+                    @submit.prevent="SubmitEdit"
+                    enctype="multipart/form-data"
+                  >
+                    <b-row>
+                      <b-col lg="6">
+                        <b-form-group
+                          label="Code"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            v-model="formedit.code"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Name"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="text"
+                            v-model="formedit.name"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Date of birth"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="date"
+                            v-model="formedit.dateofbirth"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="phone"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="text"
+                            v-model="formedit.phone"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Address"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="text"
+                            v-model="formedit.address"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                      </b-col>
+                      <b-col lg="6">
+                        <b-form-group
+                          label="Email"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="email"
+                            v-model="formedit.email"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Password"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="password"
+                            v-model="formedit.password"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group
+                          label="Confirm password"
+                          label-for="name-input"
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            type="password"
+                            v-model="formedit.confirmpassword"
+                            required
+                          >
+                          </b-form-input>
+                        </b-form-group>
+                        <b-form-group label="Image" label-for="name-input">
+                          <b-form-file
+                            v-model="formedit.img"
+                            placeholder="Choose a image or drop it here..."
+                            drop-placeholder="Drop image here..."
+                          ></b-form-file>
+                          <img class="img1" :src="image" />
+                        </b-form-group>
+                        <b-form-group label="Role">
+                          <b-form-select
+                            v-model="formedit.role"
+                            :options="options"
+                          ></b-form-select>
+                        </b-form-group>
+                        <b-button type="submit">edit</b-button>
+                      </b-col>
+                    </b-row>
                   </form>
                 </b-modal>
               </table>
@@ -136,32 +374,146 @@
 import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
+import Swal from "sweetalert2";
 Vue.use(VueAxios, axios);
 export default {
   // name: "add-category",
   data() {
     return {
-      dismissSecs: 3,
-      dismissCountDown: 0,
-      showDismissibleAlert: false,
+      form: null,
       isEdit: false,
+      options: [
+        { value: 0, text: "--Chọn--" },
+        { value: 1, text: "Admin" },
+        { value: 2, text: "Staff" }
+      ],
+      image: "",
       user: [],
       formadd: {
+        id: "",
+        code: "",
         name: "",
+        dateofbirth: "",
+        phone: "",
+        address: "",
         email: "",
-        created_at: ""
+        img: null,
+        password: "",
+        role: "",
+        status: "",
+        confirmpassword: ""
+      },
+
+      formedit: {
+        id: "",
+        code: "",
+        name: "",
+        dateofbirth: "",
+        phone: "",
+        address: "",
+        email: "",
+        img: File,
+        role: "",
+        status: "",
+        confirmpassword: ""
       }
     };
   },
   // name: "c-table",
-  mounted() {},
+  mounted() {
+    //this.formadd = new FormData();
+  },
   created() {
     this.getItem();
+    //this.formadd = new FormData();
   },
   methods: {
-    // logOut(){
-    //   var axa = "asda";
-    //   console.log(axa);
+    // onFileChange(e){
+    //   //this.formadd.img = e.target.files[0];
+
+    //   console.log(e.target.files[0]);
+    //      this.img = e.target.files[0];
+    //     this.append('img', e.target.files[0])
+    // },
+    SubmitAdd() {
+      // var data = {
+      //   user: this.formadd,
+      //   // image: this.img.name
+      // };
+      let formData = new FormData();
+
+      formData.append("code", this.formadd.code);
+      formData.append("name", this.formadd.name);
+      formData.append("dateofbirth", this.formadd.dateofbirth);
+      formData.append("phone", this.formadd.phone);
+      formData.append("address", this.formadd.address);
+      formData.append("email", this.formadd.email);
+      formData.append("password", this.formadd.password);
+      formData.append("confirmpassword", this.formadd.confirmpassword);
+      formData.append("role", this.formadd.role);
+      formData.append("img", this.formadd.img);
+
+      console.log("NEw product", formData);
+      axios
+        .post(`http://127.0.0.1:8000/api/user`, formData)
+        .then(res => {
+          this.getItem();
+          console.log("Thành công");
+          Swal.fire("Đã thêm!", "Thêm user thành công.", "success");
+        })
+        .catch(error => {
+          this.getItem();
+          Swal.fire("Failed!", error, "warning");
+        });
+    },
+    handleAdd(bvModalEvt) {
+      let data = new FormData();
+      data.append("img", this.formadd.img);
+      data.append("code", this.formadd.code);
+      data.append("name", this.formadd.name);
+      data.append("dateofbirth", this.formadd.dateofbirth);
+      data.append("phone", this.formadd.phone);
+      data.append("address", this.formadd.address);
+      data.append("email", this.formadd.email);
+      data.append("password", this.formadd.password);
+      data.append("role", this.formadd.role);
+
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data"
+        }
+      };
+      axios
+        .post(`http://127.0.0.1:8000/api/user`, this.formadd, data, {})
+        .then(res => {
+          this.getItem();
+          console.log("Thành công");
+          Swal.fire("Đã thêm!", "Thêm user thành công.", "success");
+        })
+        .catch(error => {
+          this.getItem();
+          Swal.fire("Failed!", error, "warning");
+        });
+      bvModalEvt.preventDefault();
+      this.$nextTick(() => {
+        this.$bvModal.hide("modal-prevent-closing");
+      });
+    },
+    // onFileChange(e) {
+    //   var files = e.target.files || e.dataTransfer.files;
+    //   if (!files.length) return;
+    //   this.createImage(files[0]);
+    //   this.append('img', e.target.files[0])
+    // },
+    // createImage(file) {
+    //   var image = new Image();
+    //   var reader = new FileReader();
+    //   var vm = this;
+
+    //   reader.onload = e => {
+    //     vm.image = e.target.result;
+    //   };
+    //   reader.readAsDataURL(file);
     // },
     getItem() {
       var self = this;
@@ -176,20 +528,6 @@ export default {
         });
     },
 
-    addItem(payload) {
-      const path = `http://127.0.0.1:8000/api/user`;
-      axios
-        .post(path, payload)
-        .then(() => {
-          this.getItem();
-          console.log("Thành công");
-        })
-        .catch(error => {
-          this.getItem();
-          console.log("Lỗi", error);
-        });
-    },
-
     edit(id) {
       this.formedit.id = id;
       // var _this = this;
@@ -200,13 +538,37 @@ export default {
           this.formedit.name = res.data.data.name;
           console.log(res.data.data.name);
           this.formedit.status = res.data.data.status;
-          // console.log(_this.formedit.name ),
-          // console.log(_this.formedit.status )
           console.log("Thành công");
         })
         .catch(function(error) {
           console.log("lỗi:", error);
         });
+    },
+    clickDelete(id) {
+      this.formadd.id = id;
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+      }).then(result => {
+        if (result.value) {
+          axios
+            .delete(`http://127.0.0.1:8000/api/user/` + id)
+            .then(() => {
+              Swal.fire("Đã xóa!", "Đã xóa user thành công.", "success");
+              this.getItem();
+              console.log("Thành công");
+            })
+            .catch(error => {
+              this.getItem();
+              Swal.fire("Failed!", error.message, "warning");
+              console.log("Lỗi", error);
+            });
+        }
+      });
     },
     hasValue(item, column) {
       return item[column.toLowerCase()] !== "undefined";
@@ -222,7 +584,7 @@ export default {
     resetModal() {
       this.name = "";
     },
-    handleOk(bvModalEvt) {
+    SubmitEdit(bvModalEvt) {
       var _this = this;
       var isEdit = _this.formedit;
       console.log("http://127.0.0.1:8000/api/user/", isEdit);
@@ -232,35 +594,17 @@ export default {
         .then(res => {
           console.log(res.data.data);
           this.getItem();
-          this.dismissCountDown = this.dismissSecs;
+          Swal.fire("Đã sửa!", "Sửa user thành công.", "success");
         })
         .catch(function(error) {
-          console.log("lỗi:", error);
+          Swal.fire("Failed!", error, "warning");
           this.getItem();
         });
       // Prevent modal from closing
-      bvModalEvt.preventDefault();
-      this.$nextTick(() => {
-        this.$bvModal.hide("modal-center");
-      });
-    },
-    handleAdd(bvModalEvt) {
-      var isAdd = this.formadd;
-      axios
-        .post(`http://127.0.0.1:8000/api/user`, isAdd)
-        .then(res => {
-          this.getItem();
-          console.log("Thành công");
-          this.dismissCountDown = this.dismissSecs;
-        })
-        .catch(error => {
-          this.getItem();
-          console.log("Lỗi", error);
-        });
-      bvModalEvt.preventDefault();
-      this.$nextTick(() => {
-        this.$bvModal.hide("modal-prevent-closing");
-      });
+      // bvModalEvt.preventDefault();
+      // this.$nextTick(() => {
+      //   this.$bvModal.hide("modal-center");
+      // });
     }
   }
 };
@@ -271,6 +615,12 @@ export default {
   padding: 4px 12px;
   margin-left: 1px;
   background-color: #0e6de9;
+}
+.img1 {
+  width: 30%;
+  margin: auto;
+  display: block;
+  margin-bottom: 10px;
 }
 .editcategory:hover {
   color: #212529;

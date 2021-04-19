@@ -12,11 +12,14 @@
               <p class="card-category">Here is a product</p>
               <div class="text-center">
                 <button
-                  type="submit" class="btn btn-info btn-fill float-right" 
-                  v-b-modal.add-product>Add new
+                  type="submit"
+                  class="btn btn-info btn-fill float-right"
+                  v-b-modal.add-product
+                >
+                  Add new
                 </button>
               </div>
-                <table class="table">
+              <table class="table">
                 <thead>
                   <slot name="columns">
                     <tr>
@@ -62,72 +65,40 @@
                   title="Add product"
                   @ok="handleOk"
                   @show="resetModal"
-                  @hidden="resetModal">
+                  @hidden="resetModal"
+                >
                   <form @submit.prevent="handleOk">
                     <b-row>
                       <b-col lg="5">
                         <b-form-group
                           label="Name"
                           label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input id="name-input" v-model="formadd.name" required></b-form-input>
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-input
+                            id="name-input"
+                            v-model="formadd.name"
+                            required
+                          ></b-form-input>
                         </b-form-group>
                         <b-form-file
-                          v-model="img"
+                          v-model="formadd.img"
                           :state="Boolean(img)"
                           placeholder="Choose a image or drop it here..."
                           drop-placeholder="Drop image here..."
                         ></b-form-file>
                         <b-form-group
-                          label="Quantity"
-                          label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input id="name-input" v-model="formadd.amount" required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group
                           label="Description"
                           label-for="name-input"
-                          invalid-feedback="Name is required">
-                        <b-form-textarea
-                          id="textarea"
-                          v-model="text"
-                          placeholder="Enter something..."
-                          rows="6"
-                          max-rows="8"
-                        ></b-form-textarea>
-                        </b-form-group>
-                      </b-col>
-                      <b-col lg="3">
-                        <b-form-group
-                          label="Import price"
-                          label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input id="name-input" v-model="formadd.import_price" required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group
-                          label="Sale"
-                          label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input id="name-input" v-model="formadd.sale" required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group
-                          label="Export price"
-                          label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input
-                            id="name-input"
-                            v-model="formadd.export_price"
-                            required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group label="Supplier">
-                          <b-form-select
-                            v-model="formadd.supplier_id"
-                            :options="options"
-                          ></b-form-select>
+                          invalid-feedback="Name is required"
+                        >
+                          <b-form-textarea
+                            id="textarea"
+                            v-model="formadd.note"
+                            placeholder="Enter something..."
+                            rows="6"
+                            max-rows="8"
+                          ></b-form-textarea>
                         </b-form-group>
                         <b-form-group label="Status">
                           <b-form-select
@@ -136,129 +107,105 @@
                           ></b-form-select>
                         </b-form-group>
                       </b-col>
-                      <b-col lg="2">
-                        <b-form-group label="Color">
-                          <b-form-select
-                            v-model="formadd.color_id"
-                            :options="color"
-                          ></b-form-select>
-                        </b-form-group>
-                      </b-col>
-                      <b-col lg="1">
-                        <b-form-group label="Size">
-                          <b-form-select
-                            v-model="formadd.size_id"
-                            :options="size"
-                          ></b-form-select>
-                        </b-form-group>
-                      </b-col>
-                      <b-col lg="1 fixed">
-                          <b-form-group
-                          label="Quantity"
-                          label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input id="name-input" type="number" v-model="formadd.amount" required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-button variant="success" v-b-modal.addcs>Add</b-button>
-                      </b-col>
-                    </b-row>
-                  </form>
-                </b-modal>
-                  <b-modal id="addcs" title="Second Modal" ok-only>
-                  <b-form-group label="Color">
-                          <b-form-select
-                            v-model="formadd.color_id"
-                            :options="color"
-                          ></b-form-select>
-                        </b-form-group>
-                        <b-form-group label="Size">
-                          <b-form-select
-                            v-model="formadd.size_id"
-                            :options="size"
-                          ></b-form-select>
-                        </b-form-group>
-                          <b-form-group
-                          label="Quantity"
-                          label-for="name-input"
-                          invalid-feedback="Name is required">
-                          <b-form-input id="name-input" type="number" v-model="formadd.amount" required>
-                          </b-form-input>
-                        </b-form-group>
-                </b-modal>
-                <b-modal
-                  size="xl"
-                  id="modal-edit"
-                  ref="modal"
-                  title="Edit product"
-                  @show="resetModal"
-                  @hidden="resetModal"
-                >
-                  <form @submit.prevent="handleOk">
-                    <b-row>
-                      <b-col lg="6">
+                      <b-col lg="3">
                         <b-form-group
-                          label="Name"
-                          label-for="name-input"
-                          invalid-feedback="Name is required"
-                        >
-                          <b-form-input id="name-input" v-model="formadd.name" required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-group
-                          label="Quantity"
-                          label-for="name-input"
-                          invalid-feedback="Name is required"
-                        >
-                          <b-form-input id="name-input" v-model="formadd.amount" required>
-                          </b-form-input>
-                        </b-form-group>
-                        <b-form-file
-                          v-model="img"
-                          :state="Boolean(img)"
-                          placeholder="Choose a file or drop it here..."
-                          drop-placeholder="Drop file here..."
-                        ></b-form-file>
-                        <b-form-group
-                          label="Description"
+                          label="Import price"
                           label-for="name-input"
                           invalid-feedback="Name is required"
                         >
                           <b-form-input
                             id="name-input"
-                            v-model="formadd.description"
+                            v-model="formadd.import_price"
                             required
                           >
                           </b-form-input>
                         </b-form-group>
-                      </b-col>
-                      <b-col lg="6">
                         <b-form-group
-                          label="Price"
+                          label="Sale"
                           label-for="name-input"
                           invalid-feedback="Name is required"
                         >
-                          <b-form-input id="name-input" v-model="formadd.price" required>
+                          <b-form-input
+                            id="name-input"
+                            v-model="formadd.sale"
+                            required
+                          >
                           </b-form-input>
                         </b-form-group>
                         <b-form-group
-                          label="Discount"
+                          label="Export price"
                           label-for="name-input"
                           invalid-feedback="Name is required"
                         >
-                          <b-form-input id="name-input" v-model="formadd.sale" required>
+                          <b-form-input
+                            id="name-input"
+                            v-model="formadd.export_price"
+                            required
+                          >
                           </b-form-input>
                         </b-form-group>
-                        <b-form-group label="Supplier ID">
+                        <b-form-group label="Supplier">
                           <b-form-select
                             v-model="formadd.supplier_id"
                             :options="options"
                           ></b-form-select>
                         </b-form-group>
                       </b-col>
+
+                      <b-col lg="3">
+                        <div
+                          style="display:flex,align-items: center;justify-content: center;"
+                          v-for="(apartment, index) in apartments"
+                          :key="`apartment - ${index}`"
+                        >
+                          <b-row>
+                            <b-col lg="4">
+                              <b-form-group label="Color">
+                                <b-form-select
+                                  v-model="formadd.color_id"
+                                  :options="color"
+                                  :name="`apartments[${index}][color_id]`"
+                                ></b-form-select>
+                              </b-form-group>
+                            </b-col>
+                            <b-col lg="4">
+                              <b-form-group label="Size">
+                                <b-form-select
+                                  v-model="formadd.size_id1"
+                                  :options="size"
+                                  :name="`apartments[${index}][size_id]`"
+                                ></b-form-select>
+                              </b-form-group>
+                            </b-col>
+                            <b-col lg="4">
+                              <b-form-group
+                                label="Quantity"
+                                label-for="name-input"
+                                invalid-feedback="Name is required"
+                               
+                              >
+                                <b-form-input
+                                  id="name-input"
+                                  type="number"
+                           
+                                   :name="`apartments[${index}][amount]`"
+                                  required
+                                >
+                                </b-form-input>
+                              </b-form-group>
+                            </b-col>
+                          </b-row>
+                        </div>
+                        <b-button variant="success" @click="addNewPartment()"
+                      >Add</b-button
+                    >
+                      </b-col>
                     </b-row>
+                    
                   </form>
+                  
                 </b-modal>
+
               </table>
             </template>
           </card>
@@ -286,11 +233,22 @@ export default {
         { value: 1, text: "1" },
         { value: 0, text: "2" },
       ],
+      Quantity:"11",
       products: [],
       formadd: {
-        name: "",
-        status: "1",
-        date: "",
+          name: "",
+        amount: "",
+        img: "",
+        note: "",
+        price: "",
+        sale: "",
+        status: "",
+        supplier_id: "",
+        color_id:"",
+        size_id:"",
+        Quantity:""
+      
+
       },
       formedit: {
         name: "",
@@ -301,10 +259,28 @@ export default {
         sale: "",
         status: "",
         supplier_id: "",
+        color_id:"",
+        size_id:"",
+        Quantity:""
+
       },
+
+      apartments: [
+        {
+          color_id: "",
+          size_id: "",
+          amount: "1",
+        },
+      ],
+      apartment: [
+        {
+          color_id: "",
+          size_id: "",
+          amount: "1",
+        },
+      ],
     };
   },
-  name: "l-table",
   props: {
     columns: Array,
     data: Array,
@@ -314,9 +290,27 @@ export default {
     this.getItem();
   },
   methods: {
+
+    Count(){
+      
+    },
+    addNewPartment() {
+      this.apartments.push({
+        color_id: "",
+        size_id: "",
+        amount: "",
+      });
+    },
     logOut() {
       var axa = "asda";
       console.log(axa);
+    },
+    addMoreData(index) {
+      this.formadd.push({
+        color_id: "",
+        size_id: "",
+        amount: "",
+      });
     },
     getItem() {
       var self = this;
@@ -422,7 +416,7 @@ export default {
 };
 </script>
 <style>
-.modal.show .modal-dialog{
+.modal.show .modal-dialog {
   transform: translate(0, 50%);
   padding: 2px 0px;
 }
@@ -440,9 +434,9 @@ export default {
   color: #212529;
   background-color: #189ce9 !important;
 }
-  .fixed{
-    padding: 1px 1px;
-  }
+.fixed {
+  padding: 1px 1px;
+}
 /* .b-submit {
   background-color: red;
   color: black;

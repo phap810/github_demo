@@ -14,6 +14,10 @@
         <i class="nc-icon nc-notes"></i>
         <p>Product list</p>
       </sidebar-link>
+      <sidebar-link to="/admin/bill">
+        <i class="fa fa-shopping-cart"></i>
+        <p>Bill</p>
+      </sidebar-link>
       <sidebar-link to="/admin/category">
         <i class="nc-icon nc-paper-2"></i>
         <p>Category</p>

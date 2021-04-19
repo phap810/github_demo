@@ -2,7 +2,7 @@ import DashboardLayout from '../layout/DashboardLayout.vue'
 import HomeLayout from '../layout/HomeLayout.vue'
 
 // GeneralViews
-// import NotFound from '../pages/NotFoundPage.vue'
+import NotFound from '../pages/NotFoundPage.vue'
 
 
 // Admin pages
@@ -12,28 +12,27 @@ import ProductList from 'src/pages/ProductList.vue'
 import Category from 'src/pages/Category.vue'
 import Suppliers from 'src/pages/Suppliers.vue'
 import Users from 'src/pages/Users.vue'
-import Notifications from 'src/pages/Notifications.vue'
+import Bills from 'src/pages/Bill.vue'
+import Login from 'src/pages/Login.vue'
+// import Notifications from 'src/pages/Notifications.vue'
 import Home from 'src/pages/Home.vue'
 
 const routes = [
+
   {
-    path: '/home',
-    component: HomeLayout,
-    redirect: '/home/page',
-    children: [
-      {
-        path: 'home',
-        name: 'Home',
-        component: Home
-      },
-    ]
+    path: '/',
+    component: Login,
+    // redirect: '/admin/overview',
   },
-  // {
-  //   path: '/',
-  //   component: DashboardLayout,
-  //   redirect: '/admin/overview',
-  // },
   {
+    // path: '/home',
+    // component: Home,
+    // redirect: '/home',
+    // cha:[
+    //   {
+        
+    //   }
+    // ],
     path: '/admin',
     component: DashboardLayout,
     redirect: '/admin/overview',
@@ -69,13 +68,18 @@ const routes = [
         component: Users
       },
       {
-        path: 'notifications',
-        name: 'Notifications',
-        component: Notifications
-      }
+        path: 'bill',
+        name: 'Bill',
+        component: Bills
+      },
+      // {
+      //   path: 'notifications',
+      //   name: 'Notifications',
+      //   component: Notifications
+      // }
     ]
   },
-  { path: '*', component: HomeLayout }
+  { path: '*', component: NotFound }
 ]
 
 /**

@@ -21,24 +21,24 @@
       <slot name="columns">
         <tr>
           <th>ID</th>
-          <th>Tên danh mục</th>
-          <th>Tên nhà cung cấp</th>
-          <th>Địa chỉ</th>
-          <th>SĐT</th>
+          <th>Tên khách hàng</th>
+          <th>Tổng tiền</th>
+          <th>Phương thức thanh toán</th>
+          <th>Ngày đặt</th>
           <th>Trạng thái</th>
           <th>Action</th>
         </tr>
       </slot>
     </thead>
     <tbody>
-      <tr v-for="supplier in supplier1.data" v-bind:key="supplier.id">
-        <td>{{ supplier.id }}</td>
-        <td>{{ supplier.category_id }}</td>
-        <td>{{ supplier.name }}</td>
-        <td>{{ supplier.address }}</td>
-        <td>0{{ supplier.phone }}</td>
+      <tr v-for="bill in bill1.data" v-bind:key="bill.id">
+        <td>{{ bill.id }}</td>
+        <td>{{ bill.category_id }}</td>
+        <td>{{ bill.name }}</td>
+        <td>{{ bill.address }}</td>
+        <td>0{{ bill.phone }}</td>
         <td>
-          <div v-if="supplier.status == 1">
+          <div v-if="bill.status == 1">
             <b-badge variant="success">Active</b-badge>
           </div>
           <div v-else><b-badge variant="danger">Inactive</b-badge></div>
@@ -48,7 +48,7 @@
             class="btn editcategory"
             variant="warning"
             v-b-modal.modal-edit
-            @click="edit(supplier.id)"
+            @click="edit(bill.id)"
             >Edit</b-button
           >
         </td>
@@ -163,12 +163,13 @@ export default {
     return {
       listType: [],
       isEdit: false,
-      supplier1: [],
+      bill1: [],
       formadd: {
         category_id: "",
         name: "",
         address: "",
         phone: null,
+        status: 1
       },
       formedit: {
         id: null,
@@ -184,7 +185,6 @@ export default {
       ]
     };
   },
-  name: "s-table",
   props: {
     columns: Array,
     data: Array
@@ -200,7 +200,7 @@ export default {
       Vue.axios
         .get("http://127.0.0.1:8000/api/supplier")
         .then(function(resp) {
-          self.supplier1 = resp.data;
+          self.bill1 = resp.data;
           console.log("Data:", resp.data.data);
         })
         .catch(function(error) {
