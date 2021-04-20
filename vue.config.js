@@ -7,7 +7,7 @@ function resolveSrc(_path) {
 
 module.exports = {
   devServer: {
-    proxy: 'http://localhost:8000',
+    proxy: 'http://localhost:8080',
 },
   lintOnSave: false,
   configureWebpack: {

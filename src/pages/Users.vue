@@ -72,7 +72,7 @@
                         <i class="fa fa-eye"></i>
                       </a>
                       /
-                      <a href="#" v-b-modal.modal-edit>
+                      <a href="#" v-b-modal.modal-edit @click="edit(users.id)">
                         <i class="fa fa-edit"></i>
                       </a>
                       /
@@ -206,6 +206,7 @@
                         <b-form-group label="Image" label-for="name-input">
                           <b-form-file
                             v-model="formadd.img"
+                            @change="onFileChange"
                             placeholder="Choose a image or drop it here..."
                             drop-placeholder="Drop image here..."
                           ></b-form-file>
@@ -217,7 +218,6 @@
                             :options="options"
                           ></b-form-select>
                         </b-form-group>
-                        <b-button type="submit">add</b-button>
                       </b-col>
                     </b-row>
                   </form>
@@ -226,10 +226,10 @@
                   size="lg"
                   id="modal-edit"
                   ref="modal"
-                  title="Add users"
+                  title="Edit users"
                   @show="resetModal"
                   @hidden="resetModal"
-                  @handleOk="handleEdit"
+                  @Ok="handleEdit"
                   cancel-title="Close"
                 >
                   <form
@@ -320,35 +320,46 @@
                         <b-form-group
                           label="Password"
                           label-for="name-input"
-                          invalid-feedback="Name is required"
+                        
                         >
                           <b-form-input
                             id="name-input"
                             type="password"
                             v-model="formedit.password"
-                            required
+                            
                           >
                           </b-form-input>
                         </b-form-group>
                         <b-form-group
                           label="Confirm password"
                           label-for="name-input"
-                          invalid-feedback="Name is required"
+                        
                         >
                           <b-form-input
                             id="name-input"
                             type="password"
                             v-model="formedit.confirmpassword"
-                            required
+                            
                           >
                           </b-form-input>
                         </b-form-group>
                         <b-form-group label="Image" label-for="name-input">
                           <b-form-file
                             v-model="formedit.img"
+                            @change="onFileChange"
                             placeholder="Choose a image or drop it here..."
                             drop-placeholder="Drop image here..."
                           ></b-form-file>
+                          <!-- <input type="text" v-model="formedit.img"> -->
+                          <div v-if="!show1" >
+                            <img
+                              class="img1"
+                              :src="
+                                'http://127.0.0.1:8000/uploads/user/' +
+                                  formedit.img
+                              "
+                            />
+                          </div>
                           <img class="img1" :src="image" />
                         </b-form-group>
                         <b-form-group label="Role">
@@ -357,7 +368,13 @@
                             :options="options"
                           ></b-form-select>
                         </b-form-group>
-                        <b-button type="submit">edit</b-button>
+                        <b-form-group label="Status">
+                          <b-form-select
+                            v-model="formedit.status"
+                            :options="status"
+                          ></b-form-select>
+                        </b-form-group>
+                        <b-button type="submit">Edit</b-button>
                       </b-col>
                     </b-row>
                   </form>
@@ -380,12 +397,16 @@ export default {
   // name: "add-category",
   data() {
     return {
+      show1:false,
       form: null,
       isEdit: false,
       options: [
-        { value: 0, text: "--Chọn--" },
         { value: 1, text: "Admin" },
         { value: 2, text: "Staff" }
+      ],
+      status: [
+        { value: 1, text: "Active" },
+        { value: 2, text: "InActive" }
       ],
       image: "",
       user: [],
@@ -412,34 +433,19 @@ export default {
         phone: "",
         address: "",
         email: "",
-        img: File,
+        img: [],
         role: "",
         status: "",
         confirmpassword: ""
       }
     };
   },
-  // name: "c-table",
-  mounted() {
-    //this.formadd = new FormData();
-  },
+  mounted() {},
   created() {
     this.getItem();
-    //this.formadd = new FormData();
   },
   methods: {
-    // onFileChange(e){
-    //   //this.formadd.img = e.target.files[0];
-
-    //   console.log(e.target.files[0]);
-    //      this.img = e.target.files[0];
-    //     this.append('img', e.target.files[0])
-    // },
-    SubmitAdd() {
-      // var data = {
-      //   user: this.formadd,
-      //   // image: this.img.name
-      // };
+    handleAdd(bvModalEvt) {
       let formData = new FormData();
 
       formData.append("code", this.formadd.code);
@@ -465,56 +471,29 @@ export default {
           this.getItem();
           Swal.fire("Failed!", error, "warning");
         });
-    },
-    handleAdd(bvModalEvt) {
-      let data = new FormData();
-      data.append("img", this.formadd.img);
-      data.append("code", this.formadd.code);
-      data.append("name", this.formadd.name);
-      data.append("dateofbirth", this.formadd.dateofbirth);
-      data.append("phone", this.formadd.phone);
-      data.append("address", this.formadd.address);
-      data.append("email", this.formadd.email);
-      data.append("password", this.formadd.password);
-      data.append("role", this.formadd.role);
-
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data"
-        }
-      };
-      axios
-        .post(`http://127.0.0.1:8000/api/user`, this.formadd, data, {})
-        .then(res => {
-          this.getItem();
-          console.log("Thành công");
-          Swal.fire("Đã thêm!", "Thêm user thành công.", "success");
-        })
-        .catch(error => {
-          this.getItem();
-          Swal.fire("Failed!", error, "warning");
-        });
       bvModalEvt.preventDefault();
       this.$nextTick(() => {
         this.$bvModal.hide("modal-prevent-closing");
       });
     },
-    // onFileChange(e) {
-    //   var files = e.target.files || e.dataTransfer.files;
-    //   if (!files.length) return;
-    //   this.createImage(files[0]);
-    //   this.append('img', e.target.files[0])
-    // },
-    // createImage(file) {
-    //   var image = new Image();
-    //   var reader = new FileReader();
-    //   var vm = this;
+    onFileChange(e) {
+      this.show1 = true;
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      let formdata  = new FormData()
+      this.createImage(files[0]);
+      formdata.append("img", e.target.files[0]);
+    },
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
 
-    //   reader.onload = e => {
-    //     vm.image = e.target.result;
-    //   };
-    //   reader.readAsDataURL(file);
-    // },
+      reader.onload = e => {
+        vm.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
     getItem() {
       var self = this;
       Vue.axios
@@ -527,7 +506,66 @@ export default {
           console.log("Loi:", error);
         });
     },
+    SubmitEdit(){
+      let formDT = new FormData();
 
+      formDT.append("code", this.formedit.code);
+      formDT.append("name", this.formedit.name);
+      formDT.append("dateofbirth", this.formedit.dateofbirth);
+      formDT.append("phone", this.formedit.phone);
+      formDT.append("address", this.formedit.address);
+      formDT.append("email", this.formedit.email);
+      formDT.append("password", this.formedit.password);
+      formDT.append("confirmpassword", this.formedit.confirmpassword);
+      formDT.append("role", this.formedit.role);
+      formDT.append("img", this.formedit.img);
+      formDT.append("status", this.formedit.status);
+      console.log("test http://127.0.0.1:8000/api/user/", formDT);
+      console.log("lay thu id", this.formedit.id);
+      axios
+        .put("http://127.0.0.1:8000/api/user/" + this.formedit.id, formDT)
+        .then(res => {
+          console.log(res.data.data);
+          this.getItem();
+          console.log("thành công");
+          Swal.fire("Đã sửa!", "Sửa User thành công.", "success");
+        })
+        .catch(function(error) {
+          Swal.fire("Failed!", "Lỗi không sửa được", "warning");
+        });
+    },
+    handleEdit(bvModalEvt) {
+      let formDT = new Form();
+
+      formDT.append("code", this.formedit.code);
+      formDT.append("name", this.formedit.name);
+      formDT.append("dateofbirth", this.formedit.dateofbirth);
+      formDT.append("phone", this.formedit.phone);
+      formDT.append("address", this.formedit.address);
+      formDT.append("email", this.formedit.email);
+      formDT.append("password", this.formedit.password);
+      formDT.append("confirmpassword", this.formedit.confirmpassword);
+      formDT.append("role", this.formedit.role);
+      formDT.append("img", this.formedit.img);
+      formDT.append("status", this.formedit.status);
+      console.log("test http://127.0.0.1:8000/api/user/", formDT);
+      console.log("lay thu id", this.formedit.id);
+      axios
+        .put("http://127.0.0.1:8000/api/user/" + this.formedit.id, formDT)
+        .then(res => {
+          console.log(res.data.data);
+          this.getItem();
+          console.log("thành công");
+          Swal.fire("Đã sửa!", "Sửa User thành công.", "success");
+        })
+        .catch(function(error) {
+          Swal.fire("Failed!", "Lỗi không sửa được", "warning");
+        });
+      bvModalEvt.preventDefault();
+      this.$nextTick(() => {
+        this.$bvModal.hide("modal-edit");
+      });
+    },
     edit(id) {
       this.formedit.id = id;
       // var _this = this;
@@ -536,8 +574,16 @@ export default {
         .get("http://127.0.0.1:8000/api/user/" + id)
         .then(res => {
           this.formedit.name = res.data.data.name;
-          console.log(res.data.data.name);
+          this.formedit.code = res.data.data.code;
+          this.formedit.dateofbirth = res.data.data.dateofbirth;
+          this.formedit.phone = res.data.data.phone;
+          this.formedit.address = res.data.data.address;
+          this.formedit.email = res.data.data.email;
+          this.formedit.img = res.data.data.img;
+          this.formedit.role = res.data.data.role;
           this.formedit.status = res.data.data.status;
+          console.log(this.formedit.img, "Edit IMG");
+
           console.log("Thành công");
         })
         .catch(function(error) {
@@ -583,28 +629,6 @@ export default {
     },
     resetModal() {
       this.name = "";
-    },
-    SubmitEdit(bvModalEvt) {
-      var _this = this;
-      var isEdit = _this.formedit;
-      console.log("http://127.0.0.1:8000/api/user/", isEdit);
-      console.log("lay thu id", isEdit.id);
-      axios
-        .put("http://127.0.0.1:8000/api/user/" + isEdit.id, isEdit)
-        .then(res => {
-          console.log(res.data.data);
-          this.getItem();
-          Swal.fire("Đã sửa!", "Sửa user thành công.", "success");
-        })
-        .catch(function(error) {
-          Swal.fire("Failed!", error, "warning");
-          this.getItem();
-        });
-      // Prevent modal from closing
-      // bvModalEvt.preventDefault();
-      // this.$nextTick(() => {
-      //   this.$bvModal.hide("modal-center");
-      // });
     }
   }
 };

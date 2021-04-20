@@ -10,12 +10,7 @@
             <template slot="header">
               <h4 class="card-title">Suppliers list</h4>
               <p class="card-category">Here is a suppliers</p>
-              <div class="text-center">
-                <button
-                  type="submit" class="btn btn-info btn-fill float-right" 
-                  v-b-modal.modal-prevent-closing>Add new
-                </button>
-              </div>
+
   <table class="table category">
     <thead>
       <slot name="columns">
@@ -25,6 +20,7 @@
           <th>Tổng tiền</th>
           <th>Phương thức thanh toán</th>
           <th>Ngày đặt</th>
+          <th>Chú thích</th>
           <th>Trạng thái</th>
           <th>Action</th>
         </tr>
@@ -33,10 +29,123 @@
     <tbody>
       <tr v-for="bill in bill1.data" v-bind:key="bill.id">
         <td>{{ bill.id }}</td>
-        <td>{{ bill.category_id }}</td>
-        <td>{{ bill.name }}</td>
-        <td>{{ bill.address }}</td>
-        <td>0{{ bill.phone }}</td>
+        <td>{{ bill.customer_id }}</td>
+        <td>{{ bill.total }}</td>
+        <td>{{ bill.payment }}</td>
+        <td>0{{ bill.dateorder }}</td>
+        <div v-if="bill.note == null">
+        <td>null</td>
+        </div>
+        <div v-else>
+        <td>{{ bill.note }}</td>
+        </div>
+        <td>
+          <div v-if="bill.status == 1">
+            <b-badge variant="success">Chờ xác nhận</b-badge>
+          </div>
+          <div v-else-if="bill.status == 2"><b-badge variant="danger">Đang vận chuyển</b-badge></div>
+          <div v-else><b-badge variant="warning">Gửi thành công</b-badge></div>
+        </td>
+        <td>
+          <b-button
+            class="btn editcategory"
+            variant="warning"
+            v-b-modal.modal-edit
+            @click="edit(bill.id)"
+            >Check</b-button
+          >
+                    <b-button
+            class="btn editcategory"
+            variant="warning"
+            v-b-modal.modal-edit
+            @click="edit(bill.id)"
+            >Hủy</b-button
+          >
+        </td>
+      </tr>
+    </tbody>
+    <!-- Sửa -->
+    <b-modal id="modal-edit" ref="modal" title="Edit supplier" @ok="handleOk">
+      <form @submit.prevent="SubmitEdit">
+        <b-form-group
+          label="Category name"
+          label-for="name-input"
+          invalid-feedback="Name is required"
+        >
+                  <b-form-select v-model="formedit.category_id" 
+          >
+            <option v-for="category in listType.data" :key="category.id" :value="category.id">
+              {{category.name}}
+              </option>
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group
+          label="Supplier name"
+          label-for="name-input"
+          invalid-feedback="Name is required"
+        >
+          <b-form-input id="name-input" v-model="formedit.name" required>
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          label="Supplier address"
+          label-for="name-input"
+          invalid-feedback="Name is required"
+        >
+          <b-form-input id="name-input" v-model="formedit.address" required>
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          label="Phone"
+          label-for="name-input"
+          invalid-feedback="Name is required"
+        >
+          <b-form-input id="name-input" v-model="formedit.phone" required>
+          </b-form-input>
+        </b-form-group>
+        <b-form-group label="Status">
+          <b-form-select
+            v-model="formedit.status"
+            :options="options"
+          ></b-form-select>
+        </b-form-group>
+      </form>
+    </b-modal>
+  </table>
+            </template>
+            <template slot="header">
+              <h4 class="card-title">Suppliers list</h4>
+              <p class="card-category">Here is a suppliers</p>
+
+  <table class="table category">
+    <thead>
+      <slot name="columns">
+        <tr>
+          <th>ID</th>
+          <th>Tên khách hàng</th>
+          <th>Tổng tiền</th>
+          <th>Phương thức thanh toán</th>
+          <th>Ngày đặt</th>
+          <th>Chú thích</th>
+          <th>Trạng thái</th>
+          <th>Action</th>
+        </tr>
+      </slot>
+    </thead>
+    <tbody>
+      <tr v-for="bill in bill1.data" v-bind:key="bill.id">
+        <td>{{ bill.id }}</td>
+        <td>{{ bill.customer_id }}</td>
+        <td>{{ bill.total }}</td>
+        <td>{{ bill.payment }}</td>
+        <td>0{{ bill.dateorder }}</td>
+        <div v-if="bill.note == null">
+        <td>null</td>
+        </div>
+        <div v-else>
+        <td>{{ bill.note }}</td>
+        </div>
         <td>
           <div v-if="bill.status == 1">
             <b-badge variant="success">Active</b-badge>
@@ -49,33 +158,40 @@
             variant="warning"
             v-b-modal.modal-edit
             @click="edit(bill.id)"
-            >Edit</b-button
+            >Check</b-button
+          >
+                    <b-button
+            class="btn editcategory"
+            variant="warning"
+            v-b-modal.modal-edit
+            @click="edit(bill.id)"
+            >Hủy</b-button
           >
         </td>
       </tr>
     </tbody>
-    <!-- Thêm -->
-    <b-modal
-      id="modal-prevent-closing"
-      ref="modal"
-      title="Add supplier"
-      @ok="handleAdd"
-    >
-      <form @submit.prevent="SubmitAdd">
-        <b-form-group label="Category name">
-          <b-form-select v-model="formadd.category_id" 
+    <!-- Sửa -->
+    <b-modal id="modal-edit" ref="modal" title="Edit supplier" @ok="handleOk">
+      <form @submit.prevent="SubmitEdit">
+        <b-form-group
+          label="Category name"
+          label-for="name-input"
+          invalid-feedback="Name is required"
+        >
+                  <b-form-select v-model="formedit.category_id" 
           >
             <option v-for="category in listType.data" :key="category.id" :value="category.id">
               {{category.name}}
               </option>
           </b-form-select>
         </b-form-group>
+
         <b-form-group
           label="Supplier name"
           label-for="name-input"
           invalid-feedback="Name is required"
         >
-          <b-form-input id="name-input" v-model="formadd.name" required>
+          <b-form-input id="name-input" v-model="formedit.name" required>
           </b-form-input>
         </b-form-group>
         <b-form-group
@@ -83,7 +199,7 @@
           label-for="name-input"
           invalid-feedback="Name is required"
         >
-          <b-form-input id="name-input" v-model="formadd.address" required>
+          <b-form-input id="name-input" v-model="formedit.address" required>
           </b-form-input>
         </b-form-group>
         <b-form-group
@@ -91,14 +207,78 @@
           label-for="name-input"
           invalid-feedback="Name is required"
         >
-          <b-form-input id="name-input" v-model="formadd.phone" required>
+          <b-form-input id="name-input" v-model="formedit.phone" required>
           </b-form-input>
+        </b-form-group>
+        <b-form-group label="Status">
+          <b-form-select
+            v-model="formedit.status"
+            :options="options"
+          ></b-form-select>
         </b-form-group>
       </form>
     </b-modal>
+  </table>
+            </template>
+            <template slot="header">
+              <h4 class="card-title">Suppliers list</h4>
+              <p class="card-category">Here is a suppliers</p>
+
+  <table class="table category">
+    <thead>
+      <slot name="columns">
+        <tr>
+          <th>ID</th>
+          <th>Tên khách hàng</th>
+          <th>Tổng tiền</th>
+          <th>Phương thức thanh toán</th>
+          <th>Ngày đặt</th>
+          <th>Chú thích</th>
+          <th>Trạng thái</th>
+          <th>Action</th>
+        </tr>
+      </slot>
+    </thead>
+    <tbody>
+      <tr v-for="bill in bill1.data" v-bind:key="bill.id">
+        <td>{{ bill.id }}</td>
+        <td>{{ bill.customer_id }}</td>
+        <td>{{ bill.total }}</td>
+        <td>{{ bill.payment }}</td>
+        <td>0{{ bill.dateorder }}</td>
+        <div v-if="bill.note == null">
+        <td>null</td>
+        </div>
+        <div v-else>
+        <td>{{ bill.note }}</td>
+        </div>
+        <td>
+          <div v-if="bill.status == 1">
+            <b-badge variant="success">Active</b-badge>
+          </div>
+          <div v-else><b-badge variant="danger">Inactive</b-badge></div>
+        </td>
+        <td>
+          <b-button
+            class="btn editcategory"
+            variant="warning"
+            v-b-modal.modal-edit
+            @click="edit(bill.id)"
+            >Check</b-button
+          >
+                    <b-button
+            class="btn editcategory"
+            variant="warning"
+            v-b-modal.modal-edit
+            @click="edit(bill.id)"
+            >Hủy</b-button
+          >
+        </td>
+      </tr>
+    </tbody>
     <!-- Sửa -->
     <b-modal id="modal-edit" ref="modal" title="Edit supplier" @ok="handleOk">
-      <form @submit.prevent="SubmitAdd">
+      <form @submit.prevent="SubmitEdit">
         <b-form-group
           label="Category name"
           label-for="name-input"
@@ -165,19 +345,21 @@ export default {
       isEdit: false,
       bill1: [],
       formadd: {
-        category_id: "",
-        name: "",
-        address: "",
-        phone: null,
-        status: 1
+        customer_id: "",
+        total: "",
+        payment: "",
+        dateorder: null,
+        note: 1,
+        status:null
       },
       formedit: {
-        id: null,
-        category_id: "",
-        name: "",
-        address: "",
-        phone: null,
-        status: null
+        id: "",
+        customer_id: "",
+        total: "",
+        payment: "",
+        dateorder: null,
+        note: 1,
+        status:null
       },
       options: [
         { value: 1, text: "Active" },
@@ -198,7 +380,7 @@ export default {
     getItem() {
       var self = this;
       Vue.axios
-        .get("http://127.0.0.1:8000/api/supplier")
+        .get("http://127.0.0.1:8000/api/bill")
         .then(function(resp) {
           self.bill1 = resp.data;
           console.log("Data:", resp.data.data);
@@ -223,16 +405,10 @@ export default {
     edit(id) {
 
       this.formedit.id = id;
-      console.log("http://127.0.0.1:8000/api/supplier/", id);
+      console.log("http://127.0.0.1:8000/api/bill/", id);
       axios
-        .get("http://127.0.0.1:8000/api/supplier/" + id)
+        .get("http://127.0.0.1:8000/api/bill/" + id)
         .then(res => {
-          this.formedit.category_id = res.data.data.category_id;
-          this.formedit.name = res.data.data.name;
-          this.formedit.address = res.data.data.address;
-          this.formedit.phone = res.data.data.phone;
-          this.formedit.status = res.data.data.status;
-          console.log("Thành công cate",res.data.data.phone);
           console.log("Thành công");
         })
         .catch(function(error) {
